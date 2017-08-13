@@ -74,23 +74,23 @@ services:
       # - ${FULLSTACK_WORKSPACE}/cs_comments_service:/edx/app/forum/cs_comments_service
       - ./configs/envs-edx/ficus/forum_env:/edx/app/forum/forum_env:ro
 
-  programs:
-    volumes:
-      - ./configs/envs-edx/ficus/programs.yml:/edx/etc/programs.yml:ro
+  # programs:
+  #   volumes:
+  #     - ./configs/envs-edx/ficus/programs.yml:/edx/etc/programs.yml:ro
 
-      - ${FULLSTACK_WORKSPACE}/programs:/edx/app/programs/programs
+  #     - ${FULLSTACK_WORKSPACE}/programs:/edx/app/programs/programs
       
-      - programs:/edx/app/programs
-      - programs_var:/edx/var/programs
+  #     - programs:/edx/app/programs
+  #     - programs_var:/edx/var/programs
 
-  credentials:
-    volumes:
-      - ./configs/envs-edx/ficus/credentials.yml:/edx/etc/credentials.yml:ro
+  # credentials:
+  #   volumes:
+  #     - ./configs/envs-edx/ficus/credentials.yml:/edx/etc/credentials.yml:ro
 
-      - ${FULLSTACK_WORKSPACE}/credentials:/edx/app/credentials/credentials
+  #     - ${FULLSTACK_WORKSPACE}/credentials:/edx/app/credentials/credentials
 
-      - credentials:/edx/app/credentials
-      - credentials_var:/edx/var/credentials
+  #     - credentials:/edx/app/credentials
+  #     - credentials_var:/edx/var/credentials
 
   nginx:
     volumes:
@@ -147,11 +147,11 @@ volumes:
     driver: local
   elasticsearch_logs:
     driver: local
-  programs:
-    driver: local
-  programs_var:
-    driver: local
-  credentials:
-    driver: local
-  credentials_var:
-    driver: local
+  # programs:
+  #   driver: local
+  # programs_var:
+  #   driver: local
+  # credentials:
+  #   driver: local
+  # credentials_var:
+  #   driver: local
