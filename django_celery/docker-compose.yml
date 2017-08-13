@@ -1,0 +1,25 @@
+version: '2'
+services:
+
+  provision_rabbit:
+    restart: always
+    container_name: edx.provision.rabbitmq
+    image: rabbitmq:3.6.6-management
+    hostname: rabbit
+    environment:
+      # RABBITMQ_DEFAULT_USER: rabbit
+      # RABBITMQ_DEFAULT_PASS: rabbit
+      RABBITMQ_NODENAME: rabbit@rabbit
+      RABBITMQ_ERLANG_COOKIE: DEFAULT_COOKIE
+      # RABBITMQ_DEFAULT_VHOST: "/"
+    ports:
+      - "8081:15672"
+      - "25672:5672"
+    volumes:
+      - ./configs/rabbitmq/rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro
+      - ./configs/rabbitmq/broker-definitions-rabbitmq-3.6.6.json:/etc/rabbitmq/broker-definitions.json:ro
+      - rabbit_provision:/var/lib/rabbitmq/
+
+volumes:
+  rabbit_provision:
+    driver: local

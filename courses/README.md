@@ -1,0 +1,1 @@
+Courses folder (mount to studio docker container)

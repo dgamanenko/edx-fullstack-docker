@@ -1,0 +1,157 @@
+version: '2'
+services:
+
+  mysql:
+    volumes:
+      - sql:/var/lib/mysql
+      - sql_logs:/var/log/mysql
+
+  mongo:
+    volumes:
+      - mongo:/data/db
+      - mongo_logs:/var/log/mongodb
+
+  elasticsearch:
+    volumes:
+      - elasticsearch:/usr/share/elasticsearch/data
+      - elasticsearch_logs:/usr/share/elasticsearch/logs
+
+  rabbit:
+    volumes:
+      - ./configs/rabbitmq/rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro
+      - ./configs/rabbitmq/broker-definitions-rabbitmq-3.6.6.json:/etc/rabbitmq/broker-definitions.json:ro
+      # - ./configs/rabbitmq/broker-definitions-rabbitmq-3.5.3.json:/etc/rabbitmq/broker-definitions.json:ro
+
+      - rabbit:/var/lib/rabbitmq/
+
+  xqueue:
+    volumes:
+      - ./configs/envs-edx/ficus/xqueue.auth.json:/edx/app/xqueue/xqueue.auth.json:ro
+      - ./configs/envs-edx/ficus/xqueue.env.json:/edx/app/xqueue/xqueue.env.json:ro
+
+  lms:
+    volumes:
+      - ./configs/envs-edx/ficus/lms.env.json:/edx/app/edxapp/lms.env.json:ro
+      - ./configs/envs-edx/ficus/lms.auth.json:/edx/app/edxapp/lms.auth.json:ro
+      - ./configs/envs-edx/ficus/cms.env.json:/edx/app/edxapp/cms.env.json:ro
+      - ./configs/envs-edx/ficus/cms.auth.json:/edx/app/edxapp/cms.auth.json:ro
+
+      - ./configs/workers/supervisord_lms_workers.conf:/edx/app/supervisor/supervisord_lms_workers.conf:ro
+      - ./configs/workers/lms_workers.conf:/edx/app/supervisor/conf.d/lms_workers.conf:ro
+
+      - edx_platform:/edx/app/edxapp/edx-platform
+      - edx_themes:/edx/app/edxapp/themes
+      - edx_uploads:/edx/app/edxapp/uploads
+      - edx_grades:/edx/var/edxapp/media/grades
+      - edx_data:/edx/var/edxapp/data
+      - edx_staticfiles:/edx/var/edxapp/staticfiles
+
+      - /edx/var/logs/edx
+
+      - /edx/app/edxapp/edx-platform/.prereqs_cache/
+      - /edx/app/edxapp/edx-platform/node_modules/
+
+  studio:
+    volumes:
+      - ./configs/envs-edx/ficus/lms.env.json:/edx/app/edxapp/lms.env.json:ro
+      - ./configs/envs-edx/ficus/lms.auth.json:/edx/app/edxapp/lms.auth.json:ro
+      - ./configs/envs-edx/ficus/cms.env.json:/edx/app/edxapp/cms.env.json:ro
+      - ./configs/envs-edx/ficus/cms.auth.json:/edx/app/edxapp/cms.auth.json:ro
+
+      # - edx:/edx/app/edxapp/edx-platform
+      # - edx_data:/tmp/courses
+      # - edx:/edx/app/edxapp/themes
+      # - edx:/edx/app/edxapp/uploads
+      # - edx:/edx/var/edxapp/data
+
+      - /edx/app/edxapp/edx-platform/.prereqs_cache/
+      - /edx/app/edxapp/edx-platform/node_modules/
+    volumes_from:
+      - "lms:rw"
+
+  forum:
+    volumes:
+      # - ${FULLSTACK_WORKSPACE}/cs_comments_service:/edx/app/forum/cs_comments_service
+      - ./configs/envs-edx/ficus/forum_env:/edx/app/forum/forum_env:ro
+
+  programs:
+    volumes:
+      - ./configs/envs-edx/ficus/programs.yml:/edx/etc/programs.yml:ro
+
+      - ${FULLSTACK_WORKSPACE}/programs:/edx/app/programs/programs
+      
+      - programs:/edx/app/programs
+      - programs_var:/edx/var/programs
+
+  credentials:
+    volumes:
+      - ./configs/envs-edx/ficus/credentials.yml:/edx/etc/credentials.yml:ro
+
+      - ${FULLSTACK_WORKSPACE}/credentials:/edx/app/credentials/credentials
+
+      - credentials:/edx/app/credentials
+      - credentials_var:/edx/var/credentials
+
+  nginx:
+    volumes:
+      - ./configs/nginx/nginx_entrypoint.sh:/etc/nginx/nginx_entrypoint.sh
+      - ./configs/nginx/lms.conf:/tmp/lms.conf:ro
+      - ./configs/nginx/cms.conf:/tmp/cms.conf:ro
+      - ./configs/nginx/forum.conf:/tmp/forum.conf:ro
+      - ./configs/nginx/programs.conf:/tmp/programs.conf:ro
+      - ./configs/nginx/credentials.conf:/tmp/credentials.conf:ro
+
+      - /var/log/nginxc
+      - /edx/var/log/nginx/
+    volumes_from:
+      - lms
+      - programs
+      - credentials 
+
+  # data:
+  #   volumes:
+  #     - ./configs/data_container_entrypoint.sh:/tmp/data_container_entrypoint.sh
+
+  #     - ${FULLSTACK_WORKSPACE}/edx-platform:/edx/app/edxapp/edx-platform
+  #     - ${FULLSTACK_WORKSPACE}/edx-data/themes:/edx/app/edxapp/themes
+  #     - ${FULLSTACK_WORKSPACE}/edx-data/uploads:/edx/app/edxapp/uploads
+  #     - ${FULLSTACK_WORKSPACE}/edx-data/grades:/edx/var/edxapp/media/grades
+  #     - ${FULLSTACK_WORKSPACE}/edx-data/edxapp_data:/edx/var/edxapp/data
+
+volumes:
+  sql:
+    driver: local
+  sql_logs:
+    driver: local
+  mongo:
+    driver: local
+  mongo_logs:
+    driver: local
+  rabbit:
+    driver: local
+  cash_data:
+    driver: local
+  edx_platform:
+    driver: local
+  edx_themes:
+    driver: local
+  edx_uploads:
+    driver: local
+  edx_grades:
+    driver: local
+  edx_data:
+    driver: local
+  edx_staticfiles:
+    driver: local
+  elasticsearch:
+    driver: local
+  elasticsearch_logs:
+    driver: local
+  programs:
+    driver: local
+  programs_var:
+    driver: local
+  credentials:
+    driver: local
+  credentials_var:
+    driver: local

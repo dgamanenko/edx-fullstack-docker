@@ -1,0 +1,170 @@
+version: '2'
+services:
+
+  mysql:
+    restart: always
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_general_ci
+    container_name: edx.fullstack.mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ""
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    image: mysql:5.6
+
+  memcached:
+    container_name: edx.fullstack.memcached
+    image: memcached:1.4.24
+
+  mongo:
+    restart: always
+    # We use WiredTiger in all environments. In development environments we use small files
+    # to conserve disk space, and disable the journal for a minor performance gain.
+    # See https://docs.mongodb.com/v3.0/reference/program/mongod/#options for complete details.
+    command: mongod --smallfiles --nojournal --storageEngine wiredTiger --logpath /var/log/mongodb/mongod.log#--auth
+    container_name: edx.fullstack.mongo
+    image: mongo:3.0.14
+    volumes:
+      - ./configs/mongodb/entrypoint.sh:/entrypoint.sh
+    entrypoint: /entrypoint.sh
+
+  elasticsearch:
+    restart: always
+    container_name: edx.fullstack.elasticsearch
+    image: raccoongang/elasticsearch:0.90.13
+
+  rabbit:
+    restart: always
+    container_name: edx.fullstack.rabbitmq
+    image: rabbitmq:3.6.6-management
+    hostname: rabbit
+    environment:
+      # RABBITMQ_DEFAULT_USER: rabbit
+      # RABBITMQ_DEFAULT_PASS: rabbit
+      RABBITMQ_NODENAME: rabbit@rabbit
+      RABBITMQ_ERLANG_COOKIE: DEFAULT_COOKIE
+    ports:
+      - 8080:15672
+
+  celery:
+    restart: always
+    container_name: edx.fullstack.celery
+    image: celery:3.1
+    hostname: celery
+    environment:
+      - C_FORCE_ROOT=true
+      - CELERY_BROKER_URL=amqp://celery:celery@edx.fullstack.rabbitmq
+      - DATABASE_HOST=edx.fullstack.mysql
+    links:
+      - rabbit
+      - mysql
+
+  xqueue:
+    restart: always
+    image: raccoongang/edx-xqueue:ficus
+    entrypoint: /docker-run.sh
+    container_name: edx.fullstack.xqueue
+    environment:
+      - DJANGO_SETTINGS_MODULE=xqueue.aws_settings
+    links:
+      - rabbit
+      - mysql
+
+  lms:
+    restart: always
+    container_name: edx.fullstack.lms
+    image: raccoongang/edxapp:ficus-rg
+    working_dir: /edx/app/edxapp/edx-platform
+    expose:
+      - "8000"
+    command: bash -c '/etc/init.d/rsyslog start && /bin/sleep 10 && chown www-data:www-data /edx/var/edxapp/media/grades && source /edx/app/edxapp/edxapp_env && python /edx/app/edxapp/edx-platform/manage.py lms runserver 0.0.0.0:8000 --settings aws'
+    # extra_hosts:
+    #   - "edx.fullstack.preview:127.0.0.1"
+    links:
+      - mysql
+      - mongo
+      - memcached
+      - elasticsearch
+      - celery
+      - xqueue
+      - forum
+      - programs
+      - credentials
+
+  studio:
+    restart: always
+    container_name: edx.fullstack.studio
+    image: raccoongang/edxapp:ficus-rg
+    working_dir: /edx/app/edxapp/edx-platform
+    expose:
+      - "8010"
+    command: bash -c '/etc/init.d/rsyslog start && /bin/sleep 10 && source /edx/app/edxapp/edxapp_env && python /edx/app/edxapp/edx-platform/manage.py cms runserver 0.0.0.0:8010 --settings aws'
+    links:
+      - mysql
+      - mongo
+      - memcached
+      - celery
+      - rabbit
+      - xqueue
+      - programs
+      - credentials
+
+  forum:
+    restart: always
+    container_name: edx.fullstack.forum
+    image: raccoongang/edx-forum:ficus.3
+    links:
+      - elasticsearch
+      - mongo
+
+  programs:
+    restart: always
+    container_name: edx.fullstack.programs
+    image: raccoongang/edx-programs:ficus-rg-v1
+    expose:
+      - "8140"
+    command: bash -c '/etc/init.d/rsyslog start && /bin/sleep 10 && source /edx/app/programs/programs_env && python /edx/app/programs/programs/manage.py runserver 0.0.0.0:8140 --settings=programs.settings.production'
+    links:
+      - memcached
+      - mysql
+
+  credentials:
+    restart: always
+    container_name: edx.fullstack.credentials
+    image: raccoongang/edx-credentials:ficus-rg-v1
+    command: bash -c '/etc/init.d/rsyslog start && /bin/sleep 10 && source /edx/app/credentials/credentials_env && python /edx/app/credentials/credentials/manage.py runserver 0.0.0.0:8150 --settings=credentials.settings.production'
+    expose:
+      - "8150"
+    links:
+      - mysql
+      - memcached
+    environment:
+      CACHE_LOCATION: edx.fullstack.memcached:12211
+      DB_HOST: edx.fullstack.mysql
+      SOCIAL_AUTH_EDX_OIDC_URL_ROOT: http://edx.fullstack.lms:18000/oauth2
+      ENABLE_DJANGO_TOOLBAR: 1
+
+  nginx:
+    restart: always
+    container_name: edx.fullstack.nginx
+    image: nginx:1.12
+    ports:
+      - "18000:18000" #LMS
+      - "18010:18010" #CMS
+      - "18140:18140" #PROGRAMS
+      - "18150:18150" #CREDENTIALS
+
+    entrypoint: bash -c /etc/nginx/nginx_entrypoint.sh
+    environment:
+      - NGINX_CMS_SERVER_NAME=_
+      - NGINX_LMS_PORT=8000
+      - NGINX_LMS_SERVER_NAME=_
+      - NGINX_PREVIEW_SERVER_NAME=_
+    links:
+      - lms
+      - studio
+      - programs
+      - credentials
+
+  # data:
+  #   container_name: edx.fullstack.data
+  #   entrypoint: bash -c /tmp/data_container_entrypoint.sh
+  #   image: busybox

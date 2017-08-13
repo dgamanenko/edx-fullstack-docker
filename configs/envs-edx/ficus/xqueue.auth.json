@@ -1,0 +1,32 @@
+{
+    "AWS_ACCESS_KEY_ID": "",
+    "AWS_SECRET_ACCESS_KEY": "",
+    "DATABASES": {
+        "default": {
+            "ATOMIC_REQUESTS": true,
+            "ENGINE": "django.db.backends.mysql",
+            "HOST": "edx.fullstack.mysql",
+            "NAME": "xqueue",
+            "OPTIONS": {},
+            "PASSWORD": "password",
+            "PORT": "3306",
+            "USER": "xqueue001"
+        }
+    },
+    "RABBITMQ_PASS": "edx",
+    "RABBITMQ_USER": "edx",
+    "REQUESTS_BASIC_AUTH": [
+        "edx",
+        "edx"
+    ],
+    "SWIFT_AUTH_URL": "",
+    "SWIFT_AUTH_VERSION": 1,
+    "SWIFT_KEY": "",
+    "SWIFT_REGION_NAME": "",
+    "SWIFT_TENANT_ID": "",
+    "SWIFT_TENANT_NAME": "",
+    "SWIFT_USERNAME": "",
+    "USERS": {
+        "lms": "password"
+    }
+}

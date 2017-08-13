@@ -1,0 +1,50 @@
+---
+# Ansible managed
+
+CORS_ORIGIN_WHITELIST:
+- edx.fullstack.nginx:18140
+- edx.fullstack.nginx:18150
+- edx.fullstack.nginx:18000
+- edx.fullstack.nginx:18010
+- edx.fullstack.preview
+- 127.0.0.1:18140
+- 127.0.0.1:18150
+- 127.0.0.1:18000
+- 127.0.0.1:18010
+DATABASES:
+    default:
+        ATOMIC_REQUESTS: true
+        CONN_MAX_AGE: 60
+        ENGINE: django.db.backends.mysql
+        HOST: edx.fullstack.mysql
+        NAME: programs
+        PASSWORD: password
+        PORT: '3306'
+        USER: programs001
+DATABASE_OPTIONS:
+    connect_timeout: 10
+JWT_AUTH:
+    JWT_ISSUERS:
+    -   AUDIENCE: lms-key
+        ISSUER: http://edx.fullstack.nginx:18000/oauth2
+        SECRET_KEY: lms-secret
+    -   AUDIENCE: lms-key
+        ISSUER: http://edx.fullstack.nginx:18000/oauth2
+        SECRET_KEY: lms-secret
+LANGUAGE_CODE: en-us
+MEDIA_STORAGE_BACKEND:
+    DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+    MEDIA_ROOT: /edx/var/programs/media
+    MEDIA_URL: /media/
+ORGANIZATIONS_API_URL_ROOT: http://edx.fullstack.nginx:18000/api/organizations/v0/
+PLATFORM_NAME: edx-docker
+PUBLIC_URL_ROOT: edx.fullstack.nginx:18140
+SECRET_KEY: SECURE_STRING
+SOCIAL_AUTH_EDX_OIDC_ID_TOKEN_DECRYPTION_KEY: secure-programs-secret
+SOCIAL_AUTH_EDX_OIDC_KEY: secure-programs-client
+SOCIAL_AUTH_EDX_OIDC_LOGOUT_URL: http://edx.fullstack.nginx:18000/logout
+SOCIAL_AUTH_EDX_OIDC_SECRET: secure-programs-secret
+SOCIAL_AUTH_EDX_OIDC_URL_ROOT: http://edx.fullstack.nginx:18000/oauth2
+SOCIAL_AUTH_REDIRECT_IS_http: false
+STATIC_ROOT: /edx/var/programs/staticfiles
+TIME_ZONE: UTC
