@@ -15,29 +15,33 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
+EDX_DOCKER_FULLSTACK_MAKEFILE = BASE_DIR+'../../Makefile'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # Celery settings
 import os
-import subprocess
+# import subprocess
 
 # broker_ip_docker_inspect_str="docker inspect --format='{format_str}' {broker_container}".format(format_str='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}',broker_container=os.getenv('CELERY_BROKER_DOCKER_CONTAINER', 'edx.provision.rabbitmq'))
 # broker_ip_inspect=subprocess.Popen([broker_ip_docker_inspect_str], stdout=subprocess.PIPE, shell=True)
 # CELERY_BROKER_IP=broker_ip_inspect.stdout.read().rstrip()
 # CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'amqp://rabbit:rabbit@{ip}//'.format(ip=CELERY_BROKER_IP))
 
-CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'amqp://rabbit:rabbit@localhost:25672//')
+import djcelery
+djcelery.setup_loader()
+
+BROKER_URL = os.getenv('BROKER_URL', 'amqp://rabbit:rabbit@localhost:25672//')
 
 #: Only add pickle to this list if your broker is secured
 #: from unwanted access (see userguide/security.html)
 CELERY_ACCEPT_CONTENT = ['json']
-CELERY_RESULT_BACKEND = 'db+sqlite:///results.sqlite'
+CELERY_RESULT_BACKEND = 'db+sqlite:///celery_backend_result.sqlite'
 CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '^96%0*p(u@it(*#=@fzrc%3=e)t_qgn0m0@qtlgcmpp&jvczf)'
+SECRET_KEY = '^96%0*p(u@it(*#=@fz$frf%=e)tqed232m0@qtlgcmpp&jvczf)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

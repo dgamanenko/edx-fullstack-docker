@@ -51,7 +51,7 @@ Starting the worker
 .. code-block:: console
 
     $ cd dockerprovision/
-    $ celery -A dockercelery worker -l info
+    $ celery worker --app=dockercelery.celery:app --loglevel=INFO
 
 Running a task
 ===================
@@ -59,6 +59,6 @@ Running a task
 .. code-block:: console
 
     $ python ./manage.py shell
-    >>> from dockerprovision.tasks import make
-    >>> make.delay(Makefile='/Users/dgamanenko/devstack/docker-fullstack/fullstack/Makefile', make_param='dev.up');
+    >>> from dockerprovision.tasks import makeTask
+    >>> t=makeTask(Makefile='/Users/dgamanenko/devstack/docker-fullstack/fullstack/Makefile', make_param='dev.up')
 

@@ -23,4 +23,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('registration.backends.model_activation.urls')),
     url(r'^api/webhook/$', webhook, name='webhook'),
+    url(r'^$', index, name='index'),
 ]
