@@ -22,6 +22,8 @@ from dockercelery.views import *
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('registration.backends.model_activation.urls')),
-    url(r'^api/webhook/$', webhook, name='webhook'),
+    url(r'^api/webhook$', webhook, name='webhook'),
     url(r'^$', index, name='index'),
+    url(r'^api/initwork$', initwork, name='initwork'),
+    url(r'^api/pollstate$', pollstate, name="pollstate"),
 ]

@@ -51,7 +51,7 @@ Starting the worker
 .. code-block:: console
 
     $ cd dockerprovision/
-    $ celery worker --app=dockercelery.celery:app --loglevel=INFO
+    $ celery worker --app=dockercelery.celerydocker:app --loglevel=INFO
 
 Running a task
 ===================

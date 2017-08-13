@@ -15,8 +15,6 @@ def makeTask(Makefile=settings.EDX_DOCKER_FULLSTACK_MAKEFILE, make_param='help')
                     param=make_param)
     process = subprocess.Popen('/bin/bash', stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     out, err = process.communicate(commands.encode('utf-8'))
-    retval = process.wait()
-    
-    return retval
+
  
  
