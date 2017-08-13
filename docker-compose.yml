@@ -86,8 +86,8 @@ services:
       - celery
       - xqueue
       - forum
-      - programs
-      - credentials
+      # - programs
+      # - credentials
 
   studio:
     restart: always
@@ -104,8 +104,8 @@ services:
       - celery
       - rabbit
       - xqueue
-      - programs
-      - credentials
+      # - programs
+      # - credentials
 
   forum:
     restart: always

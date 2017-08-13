@@ -98,15 +98,15 @@ services:
       - ./configs/nginx/lms.conf:/tmp/lms.conf:ro
       - ./configs/nginx/cms.conf:/tmp/cms.conf:ro
       - ./configs/nginx/forum.conf:/tmp/forum.conf:ro
-      - ./configs/nginx/programs.conf:/tmp/programs.conf:ro
-      - ./configs/nginx/credentials.conf:/tmp/credentials.conf:ro
+      # - ./configs/nginx/programs.conf:/tmp/programs.conf:ro
+      # - ./configs/nginx/credentials.conf:/tmp/credentials.conf:ro
 
       - /var/log/nginxc
       - /edx/var/log/nginx/
     volumes_from:
       - lms
-      - programs
-      - credentials 
+      # - programs
+      # - credentials 
 
   # data:
   #   volumes:
