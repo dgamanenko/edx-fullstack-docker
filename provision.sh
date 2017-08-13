@@ -45,13 +45,13 @@ if [ "$DB_PROVISION" == 1 ]; then
 fi
 
 
-IDA_NAME="programs" IDA_PORT="18140" ./provision-ida.sh
-IDA_NAME="credentials" IDA_PORT="18150" ./provision-ida.sh
+# IDA_NAME="programs" IDA_PORT="18140" ./provision-ida.sh
+# IDA_NAME="credentials" IDA_PORT="18150" ./provision-ida.sh
 
 ./provision-lms.sh
 
-./provision-ida-user.sh programs 18140
-./provision-ida-user.sh credentials 18150
+# ./provision-ida-user.sh programs 18140
+# ./provision-ida-user.sh credentials 18150
 
 ./provision-cms.sh
 

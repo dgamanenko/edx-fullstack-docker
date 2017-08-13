@@ -115,32 +115,32 @@ services:
       - elasticsearch
       - mongo
 
-  programs:
-    restart: always
-    container_name: edx.fullstack.programs
-    image: raccoongang/edx-programs:ficus-rg-v1
-    expose:
-      - "8140"
-    command: bash -c '/etc/init.d/rsyslog start && /bin/sleep 10 && source /edx/app/programs/programs_env && python /edx/app/programs/programs/manage.py runserver 0.0.0.0:8140 --settings=programs.settings.production'
-    links:
-      - memcached
-      - mysql
+  # programs:
+  #   restart: always
+  #   container_name: edx.fullstack.programs
+  #   image: raccoongang/edx-programs:ficus-rg-v1
+  #   expose:
+  #     - "8140"
+  #   command: bash -c '/etc/init.d/rsyslog start && /bin/sleep 10 && source /edx/app/programs/programs_env && python /edx/app/programs/programs/manage.py runserver 0.0.0.0:8140 --settings=programs.settings.production'
+  #   links:
+  #     - memcached
+  #     - mysql
 
-  credentials:
-    restart: always
-    container_name: edx.fullstack.credentials
-    image: raccoongang/edx-credentials:ficus-rg-v1
-    command: bash -c '/etc/init.d/rsyslog start && /bin/sleep 10 && source /edx/app/credentials/credentials_env && python /edx/app/credentials/credentials/manage.py runserver 0.0.0.0:8150 --settings=credentials.settings.production'
-    expose:
-      - "8150"
-    links:
-      - mysql
-      - memcached
-    environment:
-      CACHE_LOCATION: edx.fullstack.memcached:12211
-      DB_HOST: edx.fullstack.mysql
-      SOCIAL_AUTH_EDX_OIDC_URL_ROOT: http://edx.fullstack.lms:18000/oauth2
-      ENABLE_DJANGO_TOOLBAR: 1
+  # credentials:
+  #   restart: always
+  #   container_name: edx.fullstack.credentials
+  #   image: raccoongang/edx-credentials:ficus-rg-v1
+  #   command: bash -c '/etc/init.d/rsyslog start && /bin/sleep 10 && source /edx/app/credentials/credentials_env && python /edx/app/credentials/credentials/manage.py runserver 0.0.0.0:8150 --settings=credentials.settings.production'
+  #   expose:
+  #     - "8150"
+  #   links:
+  #     - mysql
+  #     - memcached
+  #   environment:
+  #     CACHE_LOCATION: edx.fullstack.memcached:12211
+  #     DB_HOST: edx.fullstack.mysql
+  #     SOCIAL_AUTH_EDX_OIDC_URL_ROOT: http://edx.fullstack.lms:18000/oauth2
+  #     ENABLE_DJANGO_TOOLBAR: 1
 
   nginx:
     restart: always
@@ -149,8 +149,8 @@ services:
     ports:
       - "18000:18000" #LMS
       - "18010:18010" #CMS
-      - "18140:18140" #PROGRAMS
-      - "18150:18150" #CREDENTIALS
+      # - "18140:18140" #PROGRAMS
+      # - "18150:18150" #CREDENTIALS
 
     entrypoint: bash -c /etc/nginx/nginx_entrypoint.sh
     environment:
@@ -161,8 +161,8 @@ services:
     links:
       - lms
       - studio
-      - programs
-      - credentials
+      # - programs
+      # - credentials
 
   # data:
   #   container_name: edx.fullstack.data
