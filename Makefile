@@ -112,13 +112,13 @@ studio-shell: ## Run a shell on the Studio container
 	docker-compose $(DOCKER_COMPOSE_FILES_ALL) up -d $*
 
 lms.assets: ## Update LMS assets
-	    docker-compose exec lms bash -c 'source /edx/app/edxapp/edxapp_env && cd /edx/app/edxapp/edx-platform && paver update_assets lms --settings aws'
+	    DOCKER_COMPOSE_FILES="-f docker-compose.yml -f docker-compose-host.yml" docker-compose exec lms bash -c 'source /edx/app/edxapp/edxapp_env && cd /edx/app/edxapp/edx-platform && paver update_assets lms --settings aws'
 
 cms.assets: ## Update CMS assets
-	    docker-compose exec studio bash -c 'source /edx/app/edxapp/edxapp_env && cd /edx/app/edxapp/edx-platform && paver update_assets cms --settings aws'
+	    DOCKER_COMPOSE_FILES="-f docker-compose.yml -f docker-compose-host.yml" docker-compose exec studio bash -c 'source /edx/app/edxapp/edxapp_env && cd /edx/app/edxapp/edx-platform && paver update_assets cms --settings aws'
 
 %-ida.assets: ## Update ida assets
-	docker-compose exec $* bash -c 'source /edx/app/$*/$*_env && python /edx/app/$*/$*/manage.py collectstatic --noinput --settings=$*.settings.production'
+	DOCKER_COMPOSE_FILES="-f docker-compose.yml -f docker-compose-host.yml" docker-compose exec $* bash -c 'source /edx/app/$*/$*_env && python /edx/app/$*/$*/manage.py collectstatic --noinput --settings=$*.settings.production'
 
 healthchecks: ## Run a curl against all services' healthcheck endpoints to make sure they are up. This will eventually be parameterized
 	./healthchecks.sh
