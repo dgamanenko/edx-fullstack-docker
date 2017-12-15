@@ -16,11 +16,12 @@ before_install:
   - make dev.clone
 
 script:
-  - make dev.provision-noassets
+  #- make dev.provision-noassets
+  - travis_wait 40 make dev.provision
   - make dev.up
   # - sleep 120
   - make dev.fullstack.up
-  # - sleep 60 # LMS needs like 60 seconds to come up
+  - sleep 60 # LMS needs like 60 seconds to come up
   - make healthchecks
   # - make validate-lms-volume
 
