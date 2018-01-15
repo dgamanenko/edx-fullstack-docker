@@ -71,6 +71,20 @@ a minimum of 2 CPUs and 4GB of memory works well.
        # to start without lms and cms workers use:
        make dev.up
 
+4. Change settings. To change applications settings edit configs/server-vars.yml configuration file and restart docker containers.
+
+   .. code:: sh
+ 
+       make stop
+       make dev.up
+
+5. Compile static assets.
+
+   .. code:: sh
+ 
+       make lms.assets
+       make cms.assets
+       
 After the services have started, if you need shell access to one of the
 services, run ``make <service>-shell``. For example to access the
 Catalog/Course Discovery Service, you can run:
