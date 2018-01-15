@@ -1,0 +1,4 @@
+---
+configs_result_path: '{{ playbook_dir }}/configs/envs-edx'
+edxapp_configs_result_path: '{{ configs_result_path }}'
+

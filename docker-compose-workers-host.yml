@@ -1,0 +1,89 @@
+version: '2'
+services:
+
+  worker_lms_low_1:
+    volumes:
+    #   - ./configs/envs-edx/lms.env.json:/edx/app/edxapp/lms.env.json:ro
+    #   - ./configs/envs-edx/lms.auth.json:/edx/app/edxapp/lms.auth.json:ro
+    #   - ./configs/envs-edx/cms.env.json:/edx/app/edxapp/cms.env.json:ro
+    #   - ./configs/envs-edx/cms.auth.json:/edx/app/edxapp/cms.auth.json:ro
+
+      - /edx/var/logs/edx
+      # - /edx/var/log/supervisor
+    volumes_from:
+      - "lms:rw"
+
+  worker_lms_default_1:
+    volumes:
+    #   - ./configs/envs-edx/lms.env.json:/edx/app/edxapp/lms.env.json:ro
+    #   - ./configs/envs-edx/lms.auth.json:/edx/app/edxapp/lms.auth.json:ro
+    #   - ./configs/envs-edx/cms.env.json:/edx/app/edxapp/cms.env.json:ro
+    #   - ./configs/envs-edx/cms.auth.json:/edx/app/edxapp/cms.auth.json:ro
+
+      - /edx/var/logs/edx
+      # - /edx/var/log/supervisor
+    volumes_from:
+      - "lms:rw"
+
+  worker_lms_high_1:
+    volumes:
+    #   - ./configs/envs-edx/lms.env.json:/edx/app/edxapp/lms.env.json:ro
+    #   - ./configs/envs-edx/lms.auth.json:/edx/app/edxapp/lms.auth.json:ro
+    #   - ./configs/envs-edx/cms.env.json:/edx/app/edxapp/cms.env.json:ro
+    #   - ./configs/envs-edx/cms.auth.json:/edx/app/edxapp/cms.auth.json:ro
+
+      - /edx/var/logs/edx
+      # - /edx/var/log/supervisor
+    volumes_from:
+      - "lms:rw"
+
+  worker_lms_high_mem_1:
+    volumes:
+    #   - ./configs/envs-edx/lms.env.json:/edx/app/edxapp/lms.env.json:ro
+    #   - ./configs/envs-edx/lms.auth.json:/edx/app/edxapp/lms.auth.json:ro
+    #   - ./configs/envs-edx/cms.env.json:/edx/app/edxapp/cms.env.json:ro
+    #   - ./configs/envs-edx/cms.auth.json:/edx/app/edxapp/cms.auth.json:ro
+
+      - /edx/var/logs/edx
+      # - /edx/var/log/supervisor
+    volumes_from:
+      - "lms:rw"
+
+  worker_cms_low_1:
+    volumes:
+    #   - ./configs/envs-edx/lms.env.json:/edx/app/edxapp/lms.env.json:ro
+    #   - ./configs/envs-edx/lms.auth.json:/edx/app/edxapp/lms.auth.json:ro
+    #   - ./configs/envs-edx/cms.env.json:/edx/app/edxapp/cms.env.json:ro
+    #   - ./configs/envs-edx/cms.auth.json:/edx/app/edxapp/cms.auth.json:ro
+
+      - /edx/var/logs/edx
+      # - /edx/var/log/supervisor
+    volumes_from:
+      - "lms:rw"
+
+  worker_cms_default_1:
+    volumes:
+    #   - ./configs/envs-edx/lms.env.json:/edx/app/edxapp/lms.env.json:ro
+    #   - ./configs/envs-edx/lms.auth.json:/edx/app/edxapp/lms.auth.json:ro
+    #   - ./configs/envs-edx/cms.env.json:/edx/app/edxapp/cms.env.json:ro
+    #   - ./configs/envs-edx/cms.auth.json:/edx/app/edxapp/cms.auth.json:ro
+
+      - /edx/var/logs/edx
+      # - /edx/var/log/supervisor
+    volumes_from:
+      - "lms:rw"
+
+  worker_cms_high_1:
+    volumes:
+    #   - ./configs/envs-edx/lms.env.json:/edx/app/edxapp/lms.env.json:ro
+    #   - ./configs/envs-edx/lms.auth.json:/edx/app/edxapp/lms.auth.json:ro
+    #   - ./configs/envs-edx/cms.env.json:/edx/app/edxapp/cms.env.json:ro
+    #   - ./configs/envs-edx/cms.auth.json:/edx/app/edxapp/cms.auth.json:ro
+
+
+      - /edx/var/logs/edx
+      # - /edx/var/log/supervisor
+    volumes_from:
+      - "lms:rw"
+
+

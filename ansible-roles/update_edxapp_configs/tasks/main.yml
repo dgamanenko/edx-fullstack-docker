@@ -1,0 +1,11 @@
+---
+- name: create application and auth config
+  template:
+    src: "{{ configuration_roles_dir }}/edxapp/templates/{{ item[0] }}.{{ item[1] }}.json.j2"
+    dest: "{{ edxapp_configs_result_path }}/{{ item[0] }}.{{ item[1] }}.json"
+  with_nested:
+    - "{{ service_variants_enabled }}"
+    - [ 'env', 'auth' ]
+  tags:
+    - "docker:configs"
+    - "docker:update_edxapp_configs"

@@ -1,0 +1,17 @@
+#FULLSTACK_WORKSPACE=./workspace ansible-playbook -c local -i ",localhost" ansible-update-edxapp-configs.yml -e@configs/server-vars.yml --tags 'docker:configs'
+---
+- hosts: localhost
+  gather_facts: yes
+  become: no
+  vars:
+    FULLSTACK_WORKSPACE: "{{ lookup('env','FULLSTACK_WORKSPACE') }}"
+    configuration_roles_dir: "{{ FULLSTACK_WORKSPACE }}/configuration/playbooks/roles"
+    ansible_roles_dir: "{{ playbook_dir }}/ansible-roles"
+  roles:
+    - { role: "{{configuration_roles_dir}}/edxapp", when: when_all_humans_die is defined }
+    - { role: "{{ansible_roles_dir}}/update_edxapp_configs" }
+    - { role: "{{configuration_roles_dir}}/xqueue", when: when_all_humans_die is defined }
+    - { role: "{{ansible_roles_dir}}/update_xqueue_configs" }
+    - { role: "{{configuration_roles_dir}}/forum", when: when_all_humans_die is defined }
+    - { role: "{{ansible_roles_dir}}/update_forum_configs" }
+

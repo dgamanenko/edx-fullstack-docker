@@ -1,0 +1,146 @@
+version: '2'
+services:
+
+  mysql:
+    #restart: always
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_general_ci
+    container_name: edx.fullstack.mysql
+    env_file:
+      mysql.env
+    #environment:
+      #MYSQL_ROOT_PASSWORD: "SOME_SECRET_PASSWORD"
+      #MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    image: mysql:5.6
+
+  memcached:
+    container_name: edx.fullstack.memcached
+    image: memcached:1.4.24
+
+  mongo:
+    #restart: always
+    # We use WiredTiger in all environments. In development environments we use small files
+    # to conserve disk space, and disable the journal for a minor performance gain.
+    # See https://docs.mongodb.com/v3.0/reference/program/mongod/#options for complete details.
+    command: mongod --smallfiles --nojournal --storageEngine wiredTiger --logpath /var/log/mongodb/mongod.log#--auth
+    container_name: edx.fullstack.mongo
+    image: mongo:3.0.14
+    volumes:
+      - ./configs/mongodb/entrypoint.sh:/entrypoint.sh
+    entrypoint: /entrypoint.sh
+
+  elasticsearch:
+    #restart: always
+    container_name: edx.fullstack.elasticsearch
+    image: elasticsearch:1.5.2
+
+  rabbit:
+    #restart: always
+    container_name: edx.fullstack.rabbitmq
+    image: rabbitmq:3.6.6-management
+    hostname: rabbit
+    environment:
+      # RABBITMQ_DEFAULT_USER: rabbit
+      # RABBITMQ_DEFAULT_PASS: rabbit
+      RABBITMQ_NODENAME: rabbit@rabbit
+      RABBITMQ_ERLANG_COOKIE: DEFAULT_COOKIE
+    ports:
+      - 8080:15672
+
+  # celery:
+  #   #restart: always
+  #   container_name: edx.fullstack.celery
+  #   image: celery:3.1
+  #   hostname: celery
+  #   environment:
+  #     - C_FORCE_ROOT=true
+  #     - CELERY_BROKER_URL=amqp://celery:celery@edx.fullstack.rabbitmq
+  #     - DATABASE_HOST=edx.fullstack.mysql
+  #   links:
+  #     - rabbit
+  #     - mysql
+
+  xqueue:
+    #restart: always
+    image: edxops/xqueue
+    entrypoint: /docker-run.sh
+    container_name: edx.fullstack.xqueue
+    environment:
+      - DJANGO_SETTINGS_MODULE=xqueue.aws_settings
+    links:
+      - rabbit
+      - mysql
+
+  lms:
+    #restart: always
+    container_name: edx.fullstack.lms
+    image: raccoongang/edxapp-ginkgo-rg:latest
+    # image: edxops/edxapp
+    working_dir: /edx/app/edxapp/edx-platform
+    #volumes:
+    #  - ./configs/edx-platform/edxapp_env:/edx/app/edxapp/venvs/edxapp/bin/activate
+    expose:
+      - "8000"
+    # command: bash -c '/etc/init.d/rsyslog start && /bin/sleep 10 && chown www-data:www-data /edx/var/edxapp/media/grades && chown www-data:www-data /edx/var/edxapp/media/user_tasks && source /edx/app/edxapp/venvs/edxapp/bin/activate && python /edx/app/edxapp/edx-platform/manage.py lms runserver 0.0.0.0:8000 --settings aws'
+    command:  /sbin/init
+    # extra_hosts:
+    #   - "edx.fullstack.preview:127.0.0.1"
+    links:
+      - mysql
+      - mongo
+      - memcached
+      - elasticsearch
+      # - celery
+      - xqueue
+      - forum
+
+  studio:
+    #restart: always
+    container_name: edx.fullstack.studio
+    image: raccoongang/edxapp-ginkgo-rg:latest
+    # image: edxops/edxapp
+    working_dir: /edx/app/edxapp/edx-platform
+    #volumes:
+    #  - ./configs/edx-platform/edxapp_env:/edx/app/edxapp/venvs/edxapp/bin/activate
+    expose:
+      - "8010"
+    # command: bash -c '/etc/init.d/rsyslog start && /bin/sleep 10 && source /edx/app/edxapp/venvs/edxapp/bin/activate && python /edx/app/edxapp/edx-platform/manage.py cms runserver 0.0.0.0:8010 --settings aws'
+    command:  /sbin/init
+    links:
+      - mysql
+      - mongo
+      - memcached
+      # - celery
+      - rabbit
+      - xqueue
+
+  forum:
+    #restart: always
+    container_name: edx.fullstack.forum
+    image: edxops/forum
+    #image: raccoongang/forum-ginkgo-rg:latest
+    links:
+      - elasticsearch
+      - mongo
+
+  nginx:
+    #restart: always
+    container_name: edx.fullstack.nginx
+    image: nginx:1.12
+    ports:
+      - "18000:18000" #LMS
+      - "18010:18010" #CMS
+
+    entrypoint: bash -c /etc/nginx/nginx_entrypoint.sh
+    environment:
+      - NGINX_CMS_SERVER_NAME=_
+      - NGINX_LMS_PORT=8000
+      - NGINX_LMS_SERVER_NAME=_
+      - NGINX_PREVIEW_SERVER_NAME=_
+    links:
+      - lms
+      - studio
+
+  # data:
+  #   container_name: edx.fullstack.data
+  #   entrypoint: bash -c /tmp/data_container_entrypoint.sh
+  #   image: busybox

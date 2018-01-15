@@ -1,0 +1,20 @@
+---
+- name: setup the forum env for stage/prod (with edx updated defaults)
+  template:
+    src: "{{ configuration_roles_dir }}/forum/templates/forum_env.j2"
+    dest: "{{ forum_configs_result_path }}/forum_env"
+  tags:
+    - "docker:configs"
+    - "docker:update_forum_configs"
+  with_items:
+    - "{{ forum_env }}"
+  when: forum_env is defined
+
+- name: setup the forum env for stage/prod
+  template:
+    src: '{{ configuration_roles_dir }}/forum/templates/forum_env.j2'
+    dest: "{{ forum_configs_result_path }}/forum_env"
+  tags:
+    - "docker:configs"
+    - "docker:update_forum_configs"
+  when: forum_env is not defined

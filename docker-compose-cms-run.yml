@@ -1,0 +1,6 @@
+version: '2'
+services:
+
+  studio:
+    restart: always
+    entrypoint: bash -c '/etc/init.d/rsyslog start && /bin/sleep 10 && source /edx/app/edxapp/venvs/edxapp/bin/activate && python /edx/app/edxapp/edx-platform/manage.py cms runserver 0.0.0.0:8010 --settings aws'

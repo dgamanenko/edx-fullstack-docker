@@ -1,0 +1,93 @@
+version: '2'
+services:
+
+  worker_lms_low_1:
+    container_name: edx.fullstack.worker_lms_low_1
+    image: raccoongang/edxapp-ginkgo-rg:latest
+    working_dir: /edx/app/edxapp/edx-platform
+    command: bash -c 'mkdir -p /edx/var/log/supervisor && chown www-data /edx/var/log/supervisor && /etc/init.d/rsyslog start && /bin/sleep 10 && sudo -u www-data /edx/app/edxapp/venvs/edxapp/bin/python /edx/app/edxapp/edx-platform/manage.py lms --settings=aws celery worker --loglevel=info --queues=edx.lms.core.low --hostname=edx.lms.core.low.%%h --concurrency=1 -f /edx/var/log/supervisor/lms_low_1-stdout.log'
+    links:
+      - mysql
+      - mongo
+      - memcached
+      - elasticsearch
+      #- celery
+      - rabbit
+
+  worker_lms_default_1:
+    container_name: edx.fullstack.worker_lms_default_1
+    image: raccoongang/edxapp-ginkgo-rg:latest
+    working_dir: /edx/app/edxapp/edx-platform
+    command: bash -c 'mkdir -p /edx/var/log/supervisor && chown www-data /edx/var/log/supervisor && /etc/init.d/rsyslog start && /bin/sleep 10 && sudo -u www-data /edx/app/edxapp/venvs/edxapp/bin/python /edx/app/edxapp/edx-platform/manage.py lms --settings=aws celery worker --loglevel=info --queues=edx.lms.core.default --hostname=edx.lms.core.default.%%h --concurrency=1 -f /edx/var/log/supervisor/lms_default_1-stdout.log'
+    links:
+      - mysql
+      - mongo
+      - memcached
+      - elasticsearch
+      #- celery
+      - rabbit
+
+  worker_lms_high_1:
+    container_name: edx.fullstack.worker_lms_high_1
+    image: raccoongang/edxapp-ginkgo-rg:latest
+    working_dir: /edx/app/edxapp/edx-platform
+    command: bash -c 'mkdir -p /edx/var/log/supervisor && chown www-data /edx/var/log/supervisor && /etc/init.d/rsyslog start && /bin/sleep 10 && sudo -u www-data /edx/app/edxapp/venvs/edxapp/bin/python /edx/app/edxapp/edx-platform/manage.py lms --settings=aws celery worker --loglevel=info --queues=edx.lms.core.high --hostname=edx.lms.core.high.%%h --concurrency=1 -f /edx/var/log/supervisor/lms_high_1-stdout.log'
+    links:
+      - mysql
+      - mongo
+      - memcached
+      - elasticsearch
+      #- celery
+      - rabbit
+
+  worker_lms_high_mem_1:
+    container_name: edx.fullstack.worker_lms_high_mem_1
+    image: raccoongang/edxapp-ginkgo-rg:latest
+    working_dir: /edx/app/edxapp/edx-platform
+    command: bash -c 'mkdir -p /edx/var/log/supervisor && chown www-data /edx/var/log/supervisor && /etc/init.d/rsyslog start && /bin/sleep 10 && sudo -u www-data /edx/app/edxapp/venvs/edxapp/bin/python /edx/app/edxapp/edx-platform/manage.py lms --settings=aws celery worker --loglevel=info --queues=edx.lms.core.high_mem --hostname=edx.lms.core.high_mem.%%h --concurrency=1 --maxtasksperchild 1 -f /edx/var/log/supervisor/lms_high_mem_1-stdout.log'
+    links:
+      - mysql
+      - mongo
+      - memcached
+      - elasticsearch
+      #- celery
+      - rabbit
+
+  worker_cms_low_1:
+    container_name: edx.fullstack.worker_cms_low_1
+    image: raccoongang/edxapp-ginkgo-rg:latest
+    working_dir: /edx/app/edxapp/edx-platform
+    command: bash -c 'mkdir -p /edx/var/log/supervisor && chown www-data /edx/var/log/supervisor && /etc/init.d/rsyslog start && /bin/sleep 10 && sudo -u www-data /edx/app/edxapp/venvs/edxapp/bin/python /edx/app/edxapp/edx-platform/manage.py cms --settings=aws celery worker --loglevel=info --queues=edx.cms.core.low --hostname=edx.cms.core.low.%%h --concurrency=1 -f /edx/var/log/supervisor/cms_low_1-stdout.log'
+    links:
+      - mysql
+      - mongo
+      - memcached
+      - elasticsearch
+      #- celery
+      - rabbit
+
+  worker_cms_default_1:
+    container_name: edx.fullstack.worker_cms_default_1
+    image: raccoongang/edxapp-ginkgo-rg:latest
+    working_dir: /edx/app/edxapp/edx-platform
+    command: bash -c 'mkdir -p /edx/var/log/supervisor && chown www-data /edx/var/log/supervisor && /etc/init.d/rsyslog start && /bin/sleep 10 && sudo -u www-data /edx/app/edxapp/venvs/edxapp/bin/python /edx/app/edxapp/edx-platform/manage.py cms --settings=aws celery worker --loglevel=info --queues=edx.cms.core.default --hostname=edx.cms.core.default.%%h --concurrency=1 -f /edx/var/log/supervisor/cms_default_1-stdout.log'
+    links:
+      - mysql
+      - mongo
+      - memcached
+      - elasticsearch
+      #- celery
+      - rabbit
+
+  worker_cms_high_1:
+    container_name: edx.fullstack.worker_cms_high_1
+    image: raccoongang/edxapp-ginkgo-rg:latest
+    working_dir: /edx/app/edxapp/edx-platform
+    command: bash -c 'mkdir -p /edx/var/log/supervisor && chown www-data /edx/var/log/supervisor && /etc/init.d/rsyslog start && /bin/sleep 10 && sudo -u www-data /edx/app/edxapp/venvs/edxapp/bin/python /edx/app/edxapp/edx-platform/manage.py cms --settings=aws celery worker --loglevel=info --queues=edx.cms.core.high --hostname=edx.cms.core.high.%%h --concurrency=1 -f /edx/var/log/supervisor/cms_high_1-stdout.log'
+    links:
+      - mysql
+      - mongo
+      - memcached
+      - elasticsearch
+      #- celery
+      - rabbit
