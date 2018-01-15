@@ -4,3 +4,4 @@ db.sqlite3
 *.pyc
 django_celery/venv/*
 django_celery/demoapp/results.sqlite
+workspace/*
