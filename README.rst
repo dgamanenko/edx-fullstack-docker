@@ -230,6 +230,6 @@ all containers, networks, AND data volumes.
 .. _Docker for Mac: https://docs.docker.com/docker-for-mac/
 .. _configuring Docker for Mac: https://docs.docker.com/docker-for-mac/#/advanced
 
-.. |Build Status| image:: https://travis-ci.org/dgamanenko/edx-fullstack-docker.svg?branch=master
+.. |Build Status| image:: https://travis-ci.org/dgamanenko/edx-fullstack-docker.svg?branch=ginkgo-rg
    :target: https://travis-ci.org/dgamanenko/edx-fullstack-docker
 
